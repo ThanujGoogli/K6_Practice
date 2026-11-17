@@ -1,0 +1,114 @@
+{
+    "smoke": {
+        "description": "Smoke test -minimal load to verify basic functionality",
+        "stages": [
+            {"duration": "5s","target": 1 }
+        ],
+        "thresholds": {
+            "http_req_duration": [
+                "p(95)<2000"
+            ],
+            "checks": [
+                "rate>0.95"
+            ],
+            "authentication_rate": [
+                "rate>0.95"
+            ],
+            "successful_orders": [
+                "count>0"
+            ]
+        }
+    },
+    "load": {
+        "description": "Load test - normal expanded traffic",
+        "stages": [
+            {
+                "duration": "2m",
+                "target": 2
+            },
+            {
+                "duration": "5m",
+                "target": 2
+            },
+            {
+                "duration": "2m",
+                "target": 2
+            },
+            {
+                "duration": "5m",
+                "target": 2
+            },
+            {
+                "duration": "2m",
+                "target": 1
+            },
+            {
+                "duration": "3m",
+                "target": 0
+            }
+        ],
+        "thresholds": {
+            "http_req_duration": [
+                "p(95)<2000"
+            ],
+            "checks": [
+                "rate>0.95"
+            ],
+            "authentication_rate": [
+                "rate>0.95"
+            ],
+            "successful_orders": [
+                "count>0"
+            ]
+        }
+    },
+    "stress": {
+        "description": "Stress test - identify system breaking point and maximum capacity",
+        "stages": [
+            {"duration": "2m","target": 50},
+            {"duration": "2m","target": 100},
+            {"duration": "2m","target": 150},
+            {"duration": "2m","target": 200},
+            {"duration": "2m","target": 300},
+            {"duration": "1m","target": 0}
+        ],
+        "thresholds": {
+            "http_req_duration": ["p(95)<3000"],
+            "http_req_failed": ["rate<0.05"],
+            "checks": ["rate>0.95"],
+            "authentication_rate": ["rate>0.95"]
+        }
+    },
+    "spike": {
+        "description": "Spike test - validate application behavior under sudden traffic increases",
+        "stages": [
+            {"duration": "1m","target": 20},
+            {"duration": "10s","target": 300},
+            {"duration": "1m","target": 300},
+            {"duration": "10s","target": 20},
+            {"duration": "1m","target": 20},
+            {"duration": "30s","target": 0}
+        ],
+        "thresholds": {
+            "http_req_duration": ["p(95)<3000"],
+            "http_req_failed": ["rate<0.05"],
+            "checks": ["rate>0.95"],
+            "authentication_rate": ["rate>0.95"]
+        }
+    },
+    "soak": {
+    "description": "Soak test - validate application stability under continuous load for an extended duration",
+    "stages": [
+        {"duration": "2m","target": 50},
+        {"duration": "3m","target": 100},
+        {"duration": "2h","target": 100},
+        {"duration": "2m","target": 0}
+    ],
+    "thresholds": {
+        "http_req_duration": ["p(95)<1500"],
+        "http_req_failed": ["rate<0.01"],
+        "checks": ["rate>0.99"],
+        "authentication_rate": ["rate>0.99"]
+    }
+}
+}

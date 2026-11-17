@@ -21,6 +21,16 @@ function generateRandomString(length) {
 
 export const options = {
 
+    cloud: {
+
+        //Project defalut project
+        projectID: 8503605,
+        distribution: {
+            'amazon:us:ashburn': { loadZone: 'amazon:us:ashburn', percent: 100 },
+        },
+        name: 'Test E2E'
+    },
+
     stages: [
         { duration: '5s', target: 2 },
         { duration: '5s', target: 4 },
@@ -95,9 +105,9 @@ export default function () {
             return;
         }
         if (loginSuccessful) {
-        authenticationRate.add(1);
-        authToken = loginResponse.json('token');
-        console.log(`User ${USERNAME} registered and logged in successfully`);
+            authenticationRate.add(1);
+            authToken = loginResponse.json('token');
+            console.log(`User ${USERNAME} registered and logged in successfully`);
         }
 
         sleep(1);
@@ -125,7 +135,7 @@ export default function () {
 
         };
 
-        const createOrderResponse = http.post(`${BASE_URL}/api/pizza`,JSON.stringify(orderPayload),params);
+        const createOrderResponse = http.post(`${BASE_URL}/api/pizza`, JSON.stringify(orderPayload), params);
 
         orderCreated = check(createOrderResponse, {
             'Order created status in 200': (r) => r.status === 200 || r.status === 201,
@@ -134,7 +144,7 @@ export default function () {
 
         });
 
-        if(orderCreated){
+        if (orderCreated) {
             successfulOrders.add(1);
             orderID = createOrderResponse.json('pizza.id');
             console.log(`Order created successfully with ID: ${orderID}`);
@@ -142,7 +152,7 @@ export default function () {
             // console.log(`Pizza name: ${pizzaName}`);
 
         }
-        else{
+        else {
             successfulOrders.add(0);
             console.error(`Order creation failed with status code: ${createOrderResponse.status} - ${createOrderResponse.body}`);
             return;
@@ -158,11 +168,11 @@ export default function () {
             'Order name matches': (r) => r.json('name') === orderPayload.customName
         });
 
-        if(orderCreated){
+        if (orderCreated) {
             successfulOrders.add(1);
             console.log(`Order retrieved successfully with ID: ${orderID}`);
         }
-        else{
+        else {
             successfulOrders.add(0);
             console.error(`Order retrieval failed with status code: ${getOrderResponse.status} - ${getOrderResponse.body}`);
             return;
